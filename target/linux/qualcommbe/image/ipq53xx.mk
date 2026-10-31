@@ -141,3 +141,8 @@ define Device/xiaomi_be6500
 	DEVICE_PACKAGES := ipq-wifi-xiaomi_be6500
 endef
 TARGET_DEVICES += xiaomi_be6500
+
+# 本 fork 仅构建太乙 Plus ER2（JDCloud RE-CS-08）。
+# 下列赋值覆盖上面的累加结果，屏蔽同平台其他机型，
+# 避免拉入它们依赖的私有包（如 luci-app-tmi-poe）。
+TARGET_DEVICES := jdcloud_re-cs-08
