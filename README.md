@@ -1,45 +1,35 @@
-# ImmortalWRT AI Edition
+# immortalwrt-sfp
 
-> 纯科技！零手工！敢承诺！
+太乙 Plus ER2（JDCloud RE-CS-08）专用 ImmortalWrt 源码分支，用于调试 SFP 光口。
 
-# 高质量<免费>交流群
+- 硬件：IPQ5332（四核 A53，WiFi7），平台 `qualcommbe` / `ipq53xx`
+- 仅构建 `jdcloud_re-cs-08` 一个机型，`ipq95xx` 平台设备已关闭
+- 内核 6.18（qualcommbe）
 
-[IPQ技术讨论群](https://qm.qq.com/q/v7nMhzB4oU)
+# 分支
 
-# 高质量<付费>中转站
+仅 `owrt` 一个分支，基于 [VIKINGYFY/immortalwrt](https://github.com/VIKINGYFY/immortalwrt) 的 `owrt` 分支修改。
 
-[LiBwrt-Ai](https://api.zipimg.cn/register?aff=FFPS3UMJ8HJD)
+# SFP 光口说明
 
-# 本地编译器
+光口 `port@2` 在 `target/linux/qualcommbe/dts/qcom/ipq5322-re-cs-08.dts`：
 
-https://github.com/VIKINGYFY/OWRT-Tools.git
+- 默认 `phy-mode = "10gbase-r"`，`managed = "in-band-status"`
+- 10GBASE-R PCS 不支持带内自协商，接 2500BASE-X 模块（如诺基亚猫棒）会报
+  `sfp: autoneg setting not compatible with PCS` 并停在 `Module state: error`
+- 调试方向：去掉 `managed = "in-band-status"` 保持 10G；或改 `phy-mode = "2500base-x"` 适配 2.5G 模块
 
-# 自用修改版插件
+# 配套
 
-https://github.com/VIKINGYFY/packages.git
+- 云编译：[LYOI/OpenWRT-CI](https://github.com/LYOI/OpenWRT-CI)（工作流 `ER2-BUILD`）
+- U-BOOT（高通版，沉心，推荐）：https://github.com/chenxin527/uboot-qsdk12.5-build.git
 
-# 分支说明
+# 上游致谢
 
-owrt 为多平台通用，MTK、QCA、QCB带有满血PPE驱动。
+本分支源码取自以下项目：
 
-# 自用 ImmortalWRT
-
-部分源码取自以下项目：
-
-https://github.com/JiaY-shi/openwrt.git
-
-https://github.com/JuliusBairaktaris/openwrt-ppe-nss.git
-
-https://github.com/pbs05/ponwrt.git
-
-https://github.com/perceival/openwrt-flint3.git
-
-## Star History
-
-<a href="https://www.star-history.com/?repos=vikingyfy%2Fimmortalwrt&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=vikingyfy/immortalwrt&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=vikingyfy/immortalwrt&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=vikingyfy/immortalwrt&type=date&legend=top-left" />
- </picture>
-</a>
+- https://github.com/VIKINGYFY/immortalwrt
+- https://github.com/JiaY-shi/openwrt.git
+- https://github.com/JuliusBairaktaris/openwrt-ppe-nss.git
+- https://github.com/pbs05/ponwrt.git
+- https://github.com/perceival/openwrt-flint3.git
