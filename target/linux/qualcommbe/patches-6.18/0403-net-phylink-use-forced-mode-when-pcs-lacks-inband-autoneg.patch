@@ -1,0 +1,20 @@
+--- a/drivers/net/phy/phylink.c
++++ b/drivers/net/phy/phylink.c
+@@ -4114,8 +4114,15 @@
+ 
+ 	if (!phylink_validate_pcs_inband_autoneg(pl, interface,
+ 						 config.advertising)) {
+-		phylink_err(pl, "autoneg setting not compatible with PCS");
+-		return -EINVAL;
++		/* Some PCS (QCA8084/QCA8386 SGMII+) implement forced mode
++		 * only for 2500BASE-X/10GBASE-R.  Drop the Autoneg bit and
++		 * let phylink configure the PCS in forced mode instead of
++		 * rejecting the module outright.
++		 */
++		phylink_warn(pl, "PCS cannot do in-band autoneg for %s, using forced mode\n",
++			     phy_modes(interface));
++		linkmode_clear_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
++				   config.advertising);
+ 	}
+ 
+ 	config.interface = interface;
