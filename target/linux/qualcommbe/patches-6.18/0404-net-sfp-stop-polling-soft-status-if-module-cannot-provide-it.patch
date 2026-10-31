@@ -2,8 +2,8 @@
 +++ b/drivers/net/phy/sfp.c
 @@ -1046,6 +1046,12 @@
  		dev_err_ratelimited(sfp->dev,
- 					    "failed to read SFP soft status: %pe\n",
- 					    ERR_PTR(ret));
+ 				    "failed to read SFP soft status: %pe\n",
+ 				    ERR_PTR(ret));
 +		/* Some modules (notably PON sticks) do not implement the
 +		 * A2h soft status byte at all.  Stop polling it instead of
 +		 * flooding the log on every poll interval.
