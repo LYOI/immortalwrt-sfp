@@ -134,10 +134,12 @@
 		ppe_sfp: port@2 {
 			reg = <2>;
 			label = "sfp";
-			/* Match the factory SFP+ mode; phylink selects the module's
-			 * 1000BASE-X, 2500BASE-X or 10GBASE-R interface on insertion.
+			/* The PCS behind this cage is a QCA8386/QCA8084
+			 * SGMII+ block, so the MAC side tops out at 2500BASE-X.
+			 * phylink still picks the interface from the module on
+			 * insertion (1000BASE-X / 2500BASE-X).
 			 */
-			phy-mode = "10gbase-r";
+			phy-mode = "2500base-x";
 			managed = "in-band-status";
 			sfp = <&sfp0>;
 			pcs-handle = <&pcs1_ch0>;
