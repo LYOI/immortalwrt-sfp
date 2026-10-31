@@ -130,3 +130,6 @@ define Device/xiaomi_be10000-pro
 	DEVICE_PACKAGES += ipq-wifi-xiaomi_be10000-pro
 endef
 TARGET_DEVICES += xiaomi_be10000-pro
+
+# 本 fork 不构建 ipq95xx 平台设备，置空 TARGET_DEVICES。
+TARGET_DEVICES :=
