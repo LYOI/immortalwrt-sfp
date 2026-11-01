@@ -25,7 +25,9 @@ start() {
 
 	param="${port}@${srcip}/${iface},${port}@${dstip}/"
 
-	modprobe -q -r netconsole 2>/dev/null
+	# busybox 的 modprobe 不支持 -r（会报 unrecognized option: r），
+	# 卸载必须用 rmmod；否则模块已加载时 modprobe 什么都不做，新参数永远不生效。
+	rmmod netconsole 2>/dev/null
 	if modprobe -q netconsole netconsole="$param"; then
 		logger -t netconsole "kernel log -> ${dstip}:${port} via ${iface}"
 	else
@@ -34,6 +36,6 @@ start() {
 }
 
 stop() {
-	modprobe -q -r netconsole 2>/dev/null
+	rmmod netconsole 2>/dev/null
 	return 0
 }
