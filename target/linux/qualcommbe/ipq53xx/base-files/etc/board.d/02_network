@@ -18,7 +18,9 @@ ipq53xx_setup_interfaces()
 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4" "wan"
 		;;
 	jdcloud,re-cs-08)
-		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 wan" "sfp"
+		# sfp 归入 LAN，方便直接把终端插光口调试；如需当 WAN，
+		# 换成 ucidef_set_interfaces_lan_wan "lan1 lan2 lan3" "sfp"
+		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 sfp" "wan"
 		;;
 	xiaomi,be3600-pro-wired-p5)
 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4" "wan"
