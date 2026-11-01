@@ -1,0 +1,4 @@
+#!/bin/sh
+# /etc/bootlog 里是崩溃现场，sysupgrade 时默认会被丢掉，这里加进保留列表
+grep -q '^/etc/bootlog' /etc/sysupgrade.conf 2>/dev/null || echo '/etc/bootlog' >> /etc/sysupgrade.conf
+exit 0
