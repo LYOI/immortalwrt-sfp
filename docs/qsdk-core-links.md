@@ -3,15 +3,19 @@
 > 来源：`zt406600/wlan-ap` 的 `er2` 分支（京东云 ER2 完整 QSDK + OpenWrt 25.12 构建方案）
 > 提取时间：2026-11-02
 
-## 〇、QSDK 官方 manifest（总入口，优先用这个）
+## 〇、QSDK manifest 仓库（注意：实际价值有限）
 
 ```
 https://git.codelinaro.org/clo/qsdk/releases/manifest/qstak/-/tree/release
 ```
 
-这是 QSDK 的官方 manifest 仓库（`qstak` = Qualcomm SoC 技术栈，`release` 分支）。
-用 repo 工具 `repo sync` 一次拉齐整套 QSDK 组件（内核/SSDK/NSS/驱动），
-版本锁定、不会错配。比下面逐个 clone 零散仓库更可靠。
+实测（2026-11-02）：能 clone，但里面的 manifest 全是 `NHSS.*`、`NHSS.QSDK.*`、
+`NSS.RE.*` 系列（NSS 网络子系统相关），**不是 IPQ5332 完整 QSDK 的 manifest**，
+不适合作为 ER2 的拉取入口。
+
+**真正可靠的拉取方式（实测可用）：**
+1. CodeLinaro 零散仓库（见下方「二」的清单，commit 已锁定，可直接 clone）
+2. `zt406600/wlan-ap` 的 er2 分支（已整理好全部依赖 + 编译脚本）
 
 ## 一、构建方案本体
 
@@ -26,7 +30,7 @@ https://git.codelinaro.org/clo/qsdk/releases/manifest/qstak/-/tree/release
 | 最小 config | `profiles/jdcloud_er2.yml`（约 80 包） |
 | ER2 设备树 | `feeds/qca-wifi-7/ipq53xx/dts/ipq5332-jdcloud-er2.dts` |
 
-## 二、QSDK 核心组件源码（全部在 CodeLinaro，公开）
+## 二、QSDK 核心组件源码（全部在 CodeLinaro，公开，可 clone）
 
 | 组件 | 源码仓库 | 锁定 commit |
 |---|---|---|
@@ -76,4 +80,4 @@ port@1 {
 
 「学 QSDK 核心做 ImmortalWrt」的正确答案就是这套：**OpenWrt 25.12 + QSDK SSDK/NSS/PPE 全家桶**，
 其中 sfp 挂 QCA8386（ess-switch）由 SSDK 硬件转发。所有核心组件源码都在 CodeLinaro 公开，
-优先用官方 manifest（见顶部「〇」）一次拉齐，或用 zt406600/wlan-ap 的 er2 分支现成构建方案。
+拉取方式见顶部「〇」：优先用零散仓库（commit 已锁定）或 zt406600/wlan-ap 现成方案。
