@@ -1,0 +1,18 @@
+#!/bin/sh /etc/rc.common
+# 开机后台把内核日志持续落盘到 /etc/bootlog/dmesg.log
+# 与 pstore-archive 配合：panic 有 pstore，运行时/卡死有这份增量日志
+# 用 procd 托管，异常退出会自动重拉
+
+START=95
+USE_PROCD=1
+
+start_service() {
+	mkdir -p /etc/bootlog
+
+	procd_open_instance
+	procd_set_param command /usr/bin/dmesglog.sh
+	procd_set_param respawn 3600 5 0
+	procd_set_param stdout 0
+	procd_set_param stderr 0
+	procd_close_instance
+}
