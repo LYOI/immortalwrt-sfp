@@ -1,0 +1,39 @@
+#!/bin/sh /etc/rc.common
+# 把内核日志实时发到远端 UDP（netconsole），不依赖 logd/syslogd。
+# 用户态卡死时内核仍在跑，printk 照样发得出去。
+
+START=99
+USE_PROCD=0
+
+start() {
+	config_load netconsole
+
+	local enabled srcip dstip port iface param
+	config_get_bool enabled main enabled 1
+	config_get srcip main srcip '192.168.1.1'
+	config_get dstip main dstip ''
+	config_get port main port '6666'
+	config_get iface main iface 'br-lan'
+
+	[ "$enabled" = "1" ] || return 0
+	[ -n "$dstip" ] || return 0
+
+	if [ ! -f "/lib/modules/$(uname -r)/netconsole.ko" ]; then
+		logger -t netconsole "netconsole.ko missing, skipped"
+		return 0
+	fi
+
+	param="${port}@${srcip}/${iface},${port}@${dstip}/"
+
+	modprobe -q -r netconsole 2>/dev/null
+	if modprobe -q netconsole netconsole="$param"; then
+		logger -t netconsole "kernel log -> ${dstip}:${port} via ${iface}"
+	else
+		logger -t netconsole "modprobe netconsole failed"
+	fi
+}
+
+stop() {
+	modprobe -q -r netconsole 2>/dev/null
+	return 0
+}
