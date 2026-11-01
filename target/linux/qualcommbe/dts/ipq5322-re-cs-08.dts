@@ -274,19 +274,3 @@
 &tzapp {
 	reg = <0x0 0x4b100000 0x0 0x800000>;
 };
-
-/* 调试用保留内存：1MB ramoops，落在 bootloader 保留区（4a100000-4a4fffff）
- * 之后、tz（4a600000）之前的空档里，与 smem（4a800000）、wcss（4a900000）
- * 等保留区均不重叠。掉电会丢，但重启/panic 后可在 /sys/fs/pstore 读到上一次日志。
- * 占用 1MB 内存，其余功能无影响。
- */
-&{/reserved-memory} {
-	ramoops@4a500000 {
-		compatible = "ramoops";
-		reg = <0x0 0x4a500000 0x0 0x100000>;
-		record-size = <0x80000>;
-		console-size = <0x80000>;
-		ftrace-size = <0x0>;
-		ecc-size = <0x0>;
-	};
-};
