@@ -1,0 +1,28 @@
+From: LYOI <lyoi@users.noreply.github.com>
+Subject: [PATCH] net: pcs: ipq9574: program MISC2 for 10GBASE-R as USXGMII
+
+The 10GBASE-R case only wrote PCS_MODE_XPCS and never touched MISC2, so
+the SerDes kept whatever mode the previous configuration had programmed
+(SGMII, 0x3).  The digital side then ran XPCS at 10.3125G while the
+analog side stayed at 1.25G; link training never completed and the port
+reported no carrier.
+
+USXGMII uses the same 10.3125G SerDes rate, so reuse its MISC2 value for
+10GBASE-R instead of leaving it at zero.
+
+On JDCloud RE-CS-08 (IPQ5332) this takes PCS1 MISC2 from 0x30 to 0x70,
+XPCS KR_STS then reports link=1 and the SFP port comes up at
+10000/Full.
+
+--- a/drivers/net/pcs/pcs-qcom-ipq9574.c
++++ b/drivers/net/pcs/pcs-qcom-ipq9574.c
+@@ -406,7 +406,8 @@
+ 			goto err_clk;
+ 	}
+ 
+-	if (interface == PHY_INTERFACE_MODE_USXGMII)
++	if (interface == PHY_INTERFACE_MODE_USXGMII ||
++	    interface == PHY_INTERFACE_MODE_10GBASER)
+ 		misc2 = PCS_MISC2_MODE_USXGMII;
+ 
+ 	if (misc2) {
