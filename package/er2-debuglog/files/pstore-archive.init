@@ -1,0 +1,21 @@
+#!/bin/sh /etc/rc.common
+# 开机把上一次崩溃/重启留在 pstore（ramoops 保留内存）里的内容
+# 拷到 /etc/bootlog，然后清空 pstore，避免下次开机被覆盖。
+
+START=15
+
+start() {
+	mkdir -p /etc/bootlog
+
+	[ -d /sys/fs/pstore ] || return 0
+	ls /sys/fs/pstore/* >/dev/null 2>&1 || return 0
+
+	local d
+	d="/etc/bootlog/pstore-$(date +%Y%m%d-%H%M%S)"
+	mkdir -p "$d"
+	cp -f /sys/fs/pstore/* "$d"/ 2>/dev/null
+	rm -f /sys/fs/pstore/* 2>/dev/null
+	sync
+
+	logger -t pstore "saved previous crash log to $d"
+}
